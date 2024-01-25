@@ -19,12 +19,14 @@ object StreamingEventProcessor {
     val df = spark
       .readStream
       .format("kafka")
-      .option("kafka.bootstrap.servers", "localhost:9093")
+      .option("kafka.bootstrap.servers", "localhost:9094")
       .option("subscribe", "topic1")
+      .option("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
+      .option("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
+      .option("startingOffsets", "latest")
       .load()
 
    df.printSchema()
-
     /*val schema = new StructType()
       .add("id", IntegerType)
       .add("firstname", StringType)
@@ -43,8 +45,8 @@ object StreamingEventProcessor {
 
     df.writeStream
       .format("console")
-
       .outputMode("append")
+      .option("truncate", false)
       .start()
       .awaitTermination()
   }
