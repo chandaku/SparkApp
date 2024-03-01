@@ -4,14 +4,14 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.functions.desc
 import org.apache.spark.sql.types.{IntegerType, LongType, StructType}
 
-object ReadCSV {
+object MostPopularMovies {
 
   case class Movie(userId:Int,movieId:Int, rating:Int, timestamp: Long )
 
   def main(args: Array[String]): Unit = {
     // Create Spark session
     val spark = SparkSession.builder
-      .appName("KafkaStreamReader")
+      .appName("MostPopularMoviesWithNames")
       .master("local[*]")
       .getOrCreate()
 
@@ -31,7 +31,7 @@ object ReadCSV {
 
    // val dataSet = df.as[(Int, Int, Int, Long)]
     val dataSet = df.as[Movie]
-    dataSet.groupBy("movieId").count().orderBy(desc("count")).show()
+    dataSet.groupBy("movieId").count().sort(desc("count")).show()
 
    dataSet.printSchema()
 
